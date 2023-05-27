@@ -12,6 +12,8 @@ repos:
         stages: [commit]
       - id: detect-private-key
         stages: [commit]
+      - id: detect-aws-credentials
+        stages: [commit]
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/DavidAnson/markdownlint-cli2
