@@ -2,7 +2,20 @@
 name = "mb-base-app"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+authors = ["Murilo Ijanc' <mbsd@m0x.ru>"]
+readme = "README.md"
+repository = "https://github.com/microbio-rs/mb-base-app"
+documentation = "https://microbio.rs"
+description = """
+repository that will be used as a base for the organization's applications.
+"""
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[profile.dev]
+debug = 0
+
+[profile.release]
+incremental = true
+debug = 0
 
 [dependencies]

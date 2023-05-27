@@ -11,6 +11,7 @@ env:
   RUST_BACKTRACE: short
   # RUSTFLAGS: "-D warnings -W unreachable-pub -W bare-trait-objects"
   RUSTUP_MAX_RETRIES: 10
+  RUST_CHANNEL: stable
 
 jobs:
   test:
@@ -29,6 +30,10 @@ jobs:
       run: |
         rustup update ${{ matrix.rust }} --no-self-update
         rustup default ${{ matrix.rust }}
+    - name: Cache Dependencies
+      uses: Swatinem/rust-cache@v2
+      with:
+        key: ${{ env.RUST_CHANNEL }}
     - run: cargo test --verbose
 
   rustfmt:
@@ -41,6 +46,10 @@ jobs:
         rustup update stable --no-self-update
         rustup default stable
         rustup component add rustfmt
+    - name: Cache Dependencies
+      uses: Swatinem/rust-cache@v2
+      with:
+        key: ${{ env.RUST_CHANNEL }}
     - run: cargo fmt -- --check
 
   clippy:
@@ -53,6 +62,10 @@ jobs:
         rustup update stable --no-self-update
         rustup default stable
         rustup component add clippy
+    - name: Cache Dependencies
+      uses: Swatinem/rust-cache@v2
+      with:
+        key: ${{ env.RUST_CHANNEL }}
     - run: cargo clippy --verbose
 
   doc:
@@ -65,6 +78,10 @@ jobs:
         rustup update stable --no-self-update
         rustup default stable
         rustup component add rust-docs
+    - name: Cache Dependencies
+      uses: Swatinem/rust-cache@v2
+      with:
+        key: ${{ env.RUST_CHANNEL }}
     - name: Run rustdoc
       run: RUSTDOCFLAGS="-D warnings" cargo doc --verbose --all-features
 
