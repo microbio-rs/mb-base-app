@@ -19,6 +19,7 @@ jobs:
     name: Test
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         build: [stable]
         include:
@@ -26,6 +27,11 @@ jobs:
             os: ubuntu-latest
             rust: stable
     steps:
+    - name: Install mold linker
+      uses: rui314/setup-mold@v1
+      if: ${{ runner.os == 'Linux' }}
+      with:
+        make-default: true
     - uses: actions/checkout@master
     - name: Install Rust
       run: |
@@ -84,4 +90,4 @@ jobs:
       with:
         key: ${{ env.RUST_CHANNEL }}
     - name: Run rustdoc
-      run: RUSTDOCFLAGS="-D warnings" cargo doc --verbose --all-features
+      run: RUSTDOCFLAGS="-D warnings" cargo doc --verbose --no-deps --lib --all-features
