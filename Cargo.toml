@@ -22,3 +22,7 @@ lto = true
 strip = true
 
 [dependencies]
+
+[[bin]]
+name = "mb-base-app"
+path = "src/main.rs"
