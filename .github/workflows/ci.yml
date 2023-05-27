@@ -5,12 +5,13 @@ permissions:
   contents: read #  to fetch code (actions/checkout)
 
 env:
-  CARGO_TERM_COLOR: always
+  # RUSTFLAGS: "-D warnings -W unreachable-pub -W bare-trait-objects"
   CARGO_INCREMENTAL: 0
   CARGO_NET_RETRY: 10
-  RUST_BACKTRACE: short
-  # RUSTFLAGS: "-D warnings -W unreachable-pub -W bare-trait-objects"
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+  CARGO_TERM_COLOR: always
   RUSTUP_MAX_RETRIES: 10
+  RUST_BACKTRACE: short
   RUST_CHANNEL: stable
 
 jobs:
