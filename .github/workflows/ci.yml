@@ -1,22 +1,70 @@
 name: CI
+on: [push, pull_request]
 
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+permissions:
+  contents: read #  to fetch code (actions/checkout)
 
 env:
   CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0
+  CARGO_NET_RETRY: 10
+  RUST_BACKTRACE: short
+  # RUSTFLAGS: "-D warnings -W unreachable-pub -W bare-trait-objects"
+  RUSTUP_MAX_RETRIES: 10
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
+  test:
+    name: Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build: [stable]
+        include:
+          - build: stable
+            os: ubuntu-latest
+            rust: stable
     steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+    - uses: actions/checkout@master
+    - name: Install Rust
+      run: |
+        rustup update ${{ matrix.rust }} --no-self-update
+        rustup default ${{ matrix.rust }}
+    - run: cargo test --verbose
+
+  rustfmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Install Rust
+      run: |
+        rustup update stable --no-self-update
+        rustup default stable
+        rustup component add rustfmt
+    - run: cargo fmt -- --check
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Install Rust
+      run: |
+        rustup update stable --no-self-update
+        rustup default stable
+        rustup component add clippy
+    - run: cargo clippy --verbose
+
+  doc:
+    name: Check Documentation
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Install Rust
+      run: |
+        rustup update stable --no-self-update
+        rustup default stable
+        rustup component add rust-docs
+    - name: Run rustdoc
+      run: RUSTDOCFLAGS="-D warnings" cargo doc --verbose --all-features
+
