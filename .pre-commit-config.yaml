@@ -14,6 +14,7 @@ repos:
         stages: [commit]
       - id: detect-aws-credentials
         stages: [commit]
+        args: [--allow-missing-credentials]
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/DavidAnson/markdownlint-cli2
