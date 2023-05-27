@@ -85,4 +85,3 @@ jobs:
         key: ${{ env.RUST_CHANNEL }}
     - name: Run rustdoc
       run: RUSTDOCFLAGS="-D warnings" cargo doc --verbose --all-features
-
