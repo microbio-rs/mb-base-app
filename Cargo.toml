@@ -15,7 +15,10 @@ repository that will be used as a base for the organization's applications.
 debug = 0
 
 [profile.release]
-incremental = true
+codegen-units = 1
 debug = 0
+incremental = true
+lto = true
+strip = true
 
 [dependencies]
