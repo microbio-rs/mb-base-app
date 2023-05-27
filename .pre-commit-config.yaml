@@ -22,3 +22,8 @@ repos:
     rev: v1.14.11
     hooks:
       - id: typos
+  - repo: https://github.com/crate-ci/committed
+    rev: v1.0.18
+    hooks:
+      - id: committed
+        stages: [commit-msg]
