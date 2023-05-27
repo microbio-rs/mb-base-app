@@ -3,9 +3,22 @@ repos:
     rev: v2.3.0
     hooks:
       - id: check-yaml
+        stages: [commit]
+      - id: check-toml
+        stages: [commit]
+      - id: check-json
+        stages: [commit]
+      - id: check-merge-conflict
+        stages: [commit]
+      - id: detect-private-key
+        stages: [commit]
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.7.1
     hooks:
       - id: markdownlint-cli2
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.14.11
+    hooks:
+      - id: typos
