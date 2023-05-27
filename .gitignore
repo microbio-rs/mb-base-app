@@ -1,1 +1,5 @@
 /target
+*.log
+.vscode/settings.json
+.DS_Store
+.envrc
