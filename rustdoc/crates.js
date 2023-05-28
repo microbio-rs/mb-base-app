@@ -1,0 +1,1 @@
+window.ALL_CRATES = ["mb_base_app"];
