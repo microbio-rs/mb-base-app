@@ -11,7 +11,7 @@ env:
   RUST_CHANNEL: stable
 
 jobs:
-  docs:
+  doc:
     name: Build and deploy documentation
     concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
