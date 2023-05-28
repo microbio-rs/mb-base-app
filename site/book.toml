@@ -1,0 +1,19 @@
+[book]
+authors = ["murilo ijanc"]
+language = "en"
+multilingual = false
+src = "src"
+theme = "theme"
+title = "mb-base-app"
+description = "repository that will be used as a base for the organization's applications."
+
+[build]
+build-dir = "book"
+
+[output.html]
+default-theme = "rust"
+# additional-css = ["css/extra.css"]
+copy-fonts = false
+git-repository-url = "https://github.com/microbio-rs/mb-base-app"
+edit-url-template = "https://github.com/microbio-rs/mb-base-app/edit/master/site/{path}"
+site-url = "https://microbio-rs.githubio/mb-base-app"

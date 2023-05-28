@@ -1,0 +1,52 @@
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '/site/**'
+
+name: Docs
+
+env:
+  RUST_CHANNEL: stable
+
+jobs:
+  docs:
+    name: Build and deploy documentation
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ env.RUST_CHANNEL }}
+      - name: Install static-sitemap-cli
+        run: npm install static-sitemap-cli
+      - name: Build rustdoc
+        run: RUSTDOCFLAGS="-D warnings" cargo doc --verbose --no-deps --lib --all-features
+      - name: Install mdbook
+        uses: baptiste0928/cargo-install@v1
+        with:
+          crate: mdbook
+          version: 0.4
+      - name: Run mdbook
+        run: |
+          cd site
+          mdbook build
+      - name: Generate sitemap
+        run: |
+          cd site/book
+          npx sscli --base https://microbio-rs.githubio/mb-base-app
+      - name: Organize
+        run: |
+          rm -rf target/gh-pages
+          mv site/book target/gh-pages
+          mv target/doc target/gh-pages/rustdoc
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          branch: gh-pages
+          folder: target/gh-pages
+          single-commit: true
