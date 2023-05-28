@@ -18,6 +18,7 @@ on:
   push:
     tags:
     - "v*"
+permissions: write-all
 env:
   BIN_NAME: mb-base-app
 jobs:
