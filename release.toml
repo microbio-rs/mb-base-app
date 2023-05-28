@@ -1,1 +1,8 @@
 allow-branch = ["master"]
+consolidate-commits = false
+dependent-version = "upgrade"
+pre-release-commit-message = "[{{crate_name}}] version {{version}}"
+publish = false
+sign-tag = false
+tag-message = "[{{crate_name}}] version {{version}}"
+tag-name = "{{prefix}}{{version}}"
