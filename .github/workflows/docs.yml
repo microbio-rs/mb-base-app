@@ -3,6 +3,9 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+
 name: Docs
 
 env:
@@ -24,11 +27,10 @@ jobs:
         run: npm install static-sitemap-cli
       - name: Build rustdoc
         run: RUSTDOCFLAGS="-D warnings" cargo doc --verbose --no-deps --lib --all-features
-      - name: Install mdbook
-        uses: baptiste0928/cargo-install@v1
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@v1
         with:
-          crate: mdbook
-          version: 0.4
+          mdbook-version: '0.4.29'
       - name: Run mdbook
         run: |
           cd site
