@@ -12,11 +12,36 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+use std::net::SocketAddr;
+
 use axum::{routing::get, Json, Router};
+use serde::Deserialize;
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-pub async fn run_server() {
+#[derive(Debug, Deserialize)]
+pub struct RestSetting {
+    /// Rest host
+    pub host: String,
+    /// Rest port
+    pub port: u16,
+}
+
+impl RestSetting {
+    /// Return `SocketAddr`
+    pub fn addr(&self) -> SocketAddr {
+        let addr = format!("{}:{}", &self.host, self.port);
+        addr.parse().expect("Unable to parse socket address")
+    }
+}
+
+impl Default for RestSetting {
+    fn default() -> Self {
+        Self { host: "0.0.0.0".to_string(), port: 3000 }
+    }
+}
+
+pub async fn run_server(rest: &RestSetting) {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
@@ -27,7 +52,7 @@ pub async fn run_server() {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 3000));
+    let addr = rest.addr();
     tracing::debug!("listening on {}", addr);
     axum::Server::bind(&addr).serve(app().into_make_service()).await.unwrap();
 }
@@ -50,6 +75,22 @@ mod tests {
     };
     use serde_json::{json, Value};
     use tower::ServiceExt;
+
+    #[test]
+    fn rest_setting_custom() {
+        let setting = RestSetting { port: 3001, ..Default::default() };
+        assert_eq!(&setting.host, "0.0.0.0");
+        assert_eq!(setting.port, 3001);
+        assert_eq!(setting.addr(), SocketAddr::from(([0, 0, 0, 0], 3001)));
+    }
+
+    #[test]
+    fn rest_setting_default() {
+        let setting = RestSetting::default();
+        assert_eq!(&setting.host, "0.0.0.0");
+        assert_eq!(setting.port, 3000);
+        assert_eq!(setting.addr(), SocketAddr::from(([0, 0, 0, 0], 3000)));
+    }
 
     #[tokio::test]
     async fn health() {

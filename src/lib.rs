@@ -1,4 +1,5 @@
 pub mod rest;
+pub mod settings;
 pub use rest::*;
 
 pub fn add(left: usize, right: usize) -> usize {
