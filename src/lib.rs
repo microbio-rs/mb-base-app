@@ -1,3 +1,6 @@
+pub mod rest;
+pub use rest::*;
+
 pub fn add(left: usize, right: usize) -> usize {
     left + right
 }
