@@ -12,6 +12,8 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+use tracing::warn;
+
 use mb_base_app::logging;
 use mb_base_app::rest;
 use mb_base_app::settings;
@@ -21,5 +23,11 @@ async fn main() {
     let settings = settings::Settings::new().unwrap();
 
     logging::log_init(settings.log());
-    rest::run_server(settings.rest()).await;
+
+    let quit_sig = async {
+        _ = tokio::signal::ctrl_c().await;
+        warn!("Initiating graceful shutdown");
+    };
+
+    rest::run_server(settings.rest(), quit_sig).await;
 }

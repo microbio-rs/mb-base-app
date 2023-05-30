@@ -12,6 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+use std::future::Future;
 use std::net::SocketAddr;
 
 use axum::{routing::get, Json, Router};
@@ -41,10 +42,17 @@ impl Default for RestSettings {
     }
 }
 
-pub async fn run_server(settings: &RestSettings) {
+pub async fn run_server<F>(settings: &RestSettings, sig: F)
+where
+    F: Future<Output = ()>,
+{
     let addr = settings.addr();
     tracing::info!("listening on {}", addr);
-    axum::Server::bind(&addr).serve(app().into_make_service()).await.unwrap();
+    axum::Server::bind(&addr)
+        .serve(app().into_make_service())
+        .with_graceful_shutdown(sig)
+        .await
+        .unwrap();
 }
 
 fn app() -> Router {
