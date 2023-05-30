@@ -12,12 +12,14 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-use mb_base_app::settings;
+use mb_base_app::logging;
 use mb_base_app::rest;
+use mb_base_app::settings;
 
 #[tokio::main]
 async fn main() {
     let settings = settings::Settings::new().unwrap();
-    let rest_setting = settings.rest();
-    rest::run_server(&rest_setting).await;
+
+    logging::log_init(settings.log());
+    rest::run_server(settings.rest()).await;
 }

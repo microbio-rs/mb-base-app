@@ -17,16 +17,22 @@
 use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
 
-use crate::rest::RestSetting;
+use crate::logging::LogSettings;
+use crate::rest::RestSettings;
 
 #[derive(Debug, Deserialize)]
 pub struct Settings {
-    rest: RestSetting,
+    log: LogSettings,
+    rest: RestSettings,
 }
 
 impl Settings {
-    pub fn rest(&self) -> &RestSetting {
+    pub fn rest(&self) -> &RestSettings {
         &self.rest
+    }
+
+    pub fn log(&self) -> &LogSettings {
+        &self.log
     }
 }
 

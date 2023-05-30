@@ -17,17 +17,17 @@ use std::net::SocketAddr;
 use axum::{routing::get, Json, Router};
 use serde::Deserialize;
 use tower_http::trace::TraceLayer;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[derive(Debug, Deserialize)]
-pub struct RestSetting {
+pub struct RestSettings {
     /// Rest host
     pub host: String,
+
     /// Rest port
     pub port: u16,
 }
 
-impl RestSetting {
+impl RestSettings {
     /// Return `SocketAddr`
     pub fn addr(&self) -> SocketAddr {
         let addr = format!("{}:{}", &self.host, self.port);
@@ -35,25 +35,15 @@ impl RestSetting {
     }
 }
 
-impl Default for RestSetting {
+impl Default for RestSettings {
     fn default() -> Self {
         Self { host: "0.0.0.0".to_string(), port: 3000 }
     }
 }
 
-pub async fn run_server(rest: &RestSetting) {
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| {
-                    "mb_base_app=debug,tower_http=debug".into()
-                }),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
-
-    let addr = rest.addr();
-    tracing::debug!("listening on {}", addr);
+pub async fn run_server(settings: &RestSettings) {
+    let addr = settings.addr();
+    tracing::info!("listening on {}", addr);
     axum::Server::bind(&addr).serve(app().into_make_service()).await.unwrap();
 }
 
@@ -78,7 +68,7 @@ mod tests {
 
     #[test]
     fn rest_setting_custom() {
-        let setting = RestSetting { port: 3001, ..Default::default() };
+        let setting = RestSettings { port: 3001, ..Default::default() };
         assert_eq!(&setting.host, "0.0.0.0");
         assert_eq!(setting.port, 3001);
         assert_eq!(setting.addr(), SocketAddr::from(([0, 0, 0, 0], 3001)));
@@ -86,7 +76,7 @@ mod tests {
 
     #[test]
     fn rest_setting_default() {
-        let setting = RestSetting::default();
+        let setting = RestSettings::default();
         assert_eq!(&setting.host, "0.0.0.0");
         assert_eq!(setting.port, 3000);
         assert_eq!(setting.addr(), SocketAddr::from(([0, 0, 0, 0], 3000)));

@@ -1,3 +1,4 @@
+pub mod logging;
 pub mod rest;
 pub mod settings;
 pub use rest::*;
