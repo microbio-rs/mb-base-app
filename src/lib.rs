@@ -1,4 +1,5 @@
 pub mod logging;
+pub mod grpc;
 pub mod rest;
 pub mod settings;
 pub use rest::*;

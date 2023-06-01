@@ -17,6 +17,7 @@ use tracing::warn;
 use mb_base_app::logging;
 use mb_base_app::rest;
 use mb_base_app::settings;
+// use mb_base_app::grpc;
 
 #[tokio::main]
 async fn main() {
@@ -29,5 +30,13 @@ async fn main() {
         warn!("Initiating graceful shutdown");
     };
 
+    //
+    // Http Rest Server
+    //
     rest::run_server(settings.rest(), quit_sig).await;
+
+    //
+    // Grpc Server
+    //
+    // grpc::server::run().await.unwrap();
 }
